@@ -1,0 +1,4 @@
+name: PluginLib
+version: 1.0-b1
+main: de.raffi.pluginlib.main.PluginLib
+authors: [keksexception]
