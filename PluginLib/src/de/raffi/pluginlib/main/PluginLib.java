@@ -17,6 +17,11 @@ public class PluginLib extends JavaPlugin {
     protected static PluginLib instance;
     protected static String serverVersion;
     private PacketInjector injector;
+    /**
+     * higher plugin version = higher number
+     * @since 1.0-b2
+     */
+    public static final int API_VERSION = 1;
 
     @Override
     public void onEnable() {

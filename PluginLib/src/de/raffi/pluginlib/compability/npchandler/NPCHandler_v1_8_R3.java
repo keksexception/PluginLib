@@ -98,18 +98,11 @@ public class NPCHandler_v1_8_R3 implements NPCHandler{
 	@Override
 	public void setSneaking(Object entity, boolean b, Player p) {
 		EntityPlayer ep = (EntityPlayer) entity;
-	/*	boolean tmp = ep.isSneaking();
-		ep.setSneaking(b);
-		sendPacket(p,new PacketPlayOutEntityMetadata(ep.getId(), ep.getDataWatcher(), false));	
-		ep.setSneaking(tmp);*/
 		DataWatcher w =ep.getDataWatcher();
         if (b) 
             w.watch(0, (byte)2);
          else 
             w.watch(0, (byte)0);
-        
-       // w.watch(6, Float.valueOf(20.0f));
-       // w.watch(10, 127);
         sendPacket(p, new PacketPlayOutEntityMetadata(ep.getId(), w, false));
 	}
 	@Override

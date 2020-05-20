@@ -15,7 +15,6 @@ import de.raffi.pluginlib.npc.NPC;
 import de.raffi.pluginlib.npc.NPCAction;
 import de.raffi.pluginlib.npc.NPCManager;
 import de.raffi.pluginlib.utils.ReflectionHelper;
-import net.minecraft.server.v1_8_R3.PacketPlayInUseEntity;
 
 public class PlayerListener implements Listener{
 	
@@ -38,8 +37,8 @@ public class PlayerListener implements Listener{
 		if(e.getPacket().getClass().isAssignableFrom(ReflectionHelper.packetPlayInUseEntity)) {
 			Object pack =e.getPacket();
 			
-			Field f = PacketPlayInUseEntity.class.getDeclaredField("action");
-			Field i = PacketPlayInUseEntity.class.getDeclaredField("a");
+			Field f = ReflectionHelper.packetPlayInUseEntity.getDeclaredField("action");
+			Field i = ReflectionHelper.packetPlayInUseEntity.getDeclaredField("a");
 			f.setAccessible(true);
 			i.setAccessible(true);
 			int id = i.getInt(pack);

@@ -7,6 +7,9 @@ import de.raffi.pluginlib.utils.Logger;
 
 public class NPCManager {
 	
+	/**
+	 * list of all NPCs
+	 */
 	public static List<NPC>npcs = new ArrayList<>();
 	/**
 	 * please use {@link NPC#register()}

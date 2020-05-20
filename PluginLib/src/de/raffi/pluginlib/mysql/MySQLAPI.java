@@ -17,6 +17,12 @@ public class MySQLAPI {
 		this.data = data;
 		if(connectImmediately) connect();
 	}
+	public MySQLAPI(String host, String port, String database,String username, String passwort,boolean connectImmediately) {
+		this(new ConnectionData(host, port, database, username, passwort),connectImmediately);
+	}
+	public MySQLAPI(String host, String port, String database,String username, String passwort) {
+		this(new ConnectionData(host, port, database, username, passwort),false);
+	}
 	/**
 	 * 
 	 * @return true if connected successfully
