@@ -25,6 +25,11 @@ public abstract interface NPCHandler {
 	public void setAnimation(Object entity, Animation animation,Player p);
 	public void setLocation(Object entity, Location loc,Player p);
 	public void setLocation(Object entity, Location loc);
+	/**
+	 * 
+	 * @since 1.1-b3
+	 */
+	public void setRotation(Object entity, float yaw, float pitch,Player p);
 	public void rotateTo(Object entity, Location loc,Player p,NPC npc);
 	public boolean isSneaking(Object entity);
 	public int getID(Object entity);

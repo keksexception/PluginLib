@@ -224,6 +224,11 @@ public class NPC {
     public byte getFixRotation(float yawpitch) {
         return (byte)(yawpitch * 256.0f / 360.0f);
     }
+    /**
+     * @deprecated 1.8 only
+     * @param yaw
+     * @param pitch
+     */
     public void setRotation(float yaw, float pitch) {
     	getLocation().setYaw(yaw);
     	getLocation().setPitch(pitch);
@@ -242,10 +247,11 @@ public class NPC {
     	this.loc.setPitch(loc.getPitch());
     }
     public void setRotation(Player p, float yaw, float pitch) {
-    	Location clone = getLocation().clone();
+    	/*Location clone = getLocation().clone();
     	clone.setYaw(yaw);
     	clone.setPitch(pitch);
-    	setLocation(p,clone);
+    	setLocation(p,clone);*/
+    	NPCHandlerManager.npcHandler.setRotation(entity, yaw, pitch,p);
     }
     /**
      * sets the location of the NPC

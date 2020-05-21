@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_8_R3.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_15_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -17,26 +17,29 @@ import com.mojang.authlib.GameProfile;
 import de.raffi.pluginlib.compability.CompabilityHandler;
 import de.raffi.pluginlib.npc.Animation;
 import de.raffi.pluginlib.npc.NPC;
-import net.minecraft.server.v1_8_R3.DataWatcher;
-import net.minecraft.server.v1_8_R3.Entity;
-import net.minecraft.server.v1_8_R3.EntityPlayer;
-import net.minecraft.server.v1_8_R3.MinecraftServer;
-import net.minecraft.server.v1_8_R3.PacketPlayOutAnimation;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntity;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityEquipment;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityHeadRotation;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityMetadata;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityTeleport;
-import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn;
-import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
-import net.minecraft.server.v1_8_R3.PlayerConnection;
-import net.minecraft.server.v1_8_R3.PlayerInteractManager;
-import net.minecraft.server.v1_8_R3.WorldServer;
-import net.minecraft.server.v1_8_R3.WorldSettings.EnumGamemode;
+import net.minecraft.server.v1_15_R1.PacketPlayOutEntity.PacketPlayOutEntityLook;
+import net.minecraft.server.v1_15_R1.DataWatcher;
+import net.minecraft.server.v1_15_R1.DataWatcherObject;
+import net.minecraft.server.v1_15_R1.DataWatcherRegistry;
+import net.minecraft.server.v1_15_R1.Entity;
+import net.minecraft.server.v1_15_R1.EntityPlayer;
+import net.minecraft.server.v1_15_R1.EnumGamemode;
+import net.minecraft.server.v1_15_R1.EnumItemSlot;
+import net.minecraft.server.v1_15_R1.MinecraftServer;
+import net.minecraft.server.v1_15_R1.PacketPlayOutAnimation;
+import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_15_R1.PacketPlayOutEntityEquipment;
+import net.minecraft.server.v1_15_R1.PacketPlayOutEntityHeadRotation;
+import net.minecraft.server.v1_15_R1.PacketPlayOutEntityMetadata;
+import net.minecraft.server.v1_15_R1.PacketPlayOutEntityTeleport;
+import net.minecraft.server.v1_15_R1.PacketPlayOutNamedEntitySpawn;
+import net.minecraft.server.v1_15_R1.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_15_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
+import net.minecraft.server.v1_15_R1.PlayerConnection;
+import net.minecraft.server.v1_15_R1.PlayerInteractManager;
+import net.minecraft.server.v1_15_R1.WorldServer;
 
-public class NPCHandler_v1_8_R3 implements NPCHandler{
+public class NPCHandler_v1_15_R1 implements NPCHandler{
 
 	@Override
 	public Object createEntityPlayerAndTeleport(GameProfile profile, Location loc) {
@@ -77,9 +80,9 @@ public class NPCHandler_v1_8_R3 implements NPCHandler{
 	@Override
 	public void setHandItem(Object entity, ItemStack set) {
 		EntityPlayer ep = (EntityPlayer) entity;
-		net.minecraft.server.v1_8_R3.ItemStack stack = CraftItemStack.asNMSCopy(set);
+		net.minecraft.server.v1_15_R1.ItemStack stack = CraftItemStack.asNMSCopy(set);
 		ep.inventory.setItem(0, stack);
-		Bukkit.getOnlinePlayers().forEach(p->sendPacket(p, new PacketPlayOutEntityEquipment(ep.getId(), 0, stack)));
+		Bukkit.getOnlinePlayers().forEach(p->sendPacket(p, new PacketPlayOutEntityEquipment(ep.getId(), EnumItemSlot.MAINHAND, stack)));
 	}
 
 	@Override
@@ -94,6 +97,7 @@ public class NPCHandler_v1_8_R3 implements NPCHandler{
 		PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
         connection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, ep));
         connection.sendPacket(new PacketPlayOutNamedEntitySpawn(ep));
+        connection.sendPacket(new PacketPlayOutEntityEquipment(ep.getId(), EnumItemSlot.MAINHAND, ep.getItemInMainHand()));
 	}
 
 	@Override
@@ -101,9 +105,9 @@ public class NPCHandler_v1_8_R3 implements NPCHandler{
 		EntityPlayer ep = (EntityPlayer) entity;
 		DataWatcher w =ep.getDataWatcher();
         if (b) 
-            w.watch(0, (byte)2);
+        	w.set(new DataWatcherObject<>(0, DataWatcherRegistry.a), (byte)2);
          else 
-            w.watch(0, (byte)0);
+        	w.set(new DataWatcherObject<>(0, DataWatcherRegistry.a), (byte)0);
         sendPacket(p, new PacketPlayOutEntityMetadata(ep.getId(), w, false));
 	}
 	@Override
@@ -148,9 +152,9 @@ public class NPCHandler_v1_8_R3 implements NPCHandler{
 	@Override
 	public void rotateTo(Object e, Location other, Player p,NPC npc) {
 		Entity entity =(Entity)e;
-		double dirx = entity.locX - other.getX();
-	    double diry = entity.locY - other.getY();
-	    double dirz = entity.locZ- other.getZ();
+		double dirx = entity.locX() - other.getX();
+	    double diry = entity.locY() - other.getY();
+	    double dirz = entity.locZ()- other.getZ();
 
 	    double len = Math.sqrt(dirx*dirx + diry*diry + dirz*dirz);
 
@@ -180,11 +184,10 @@ public class NPCHandler_v1_8_R3 implements NPCHandler{
 	public int getID(Object entity) {
 		return ((Entity)entity).getId();
 	}
-
 	@Override
 	public void setRotation(Object entity, float yaw, float pitch, Player p) {
 		EntityPlayer ep = (EntityPlayer) entity;
-	    PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(ep.getId(), this.getFixRotation(yaw), this.getFixRotation(pitch), true);
+	    PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntityLook(ep.getId(), this.getFixRotation(yaw), this.getFixRotation(pitch), true);
         PacketPlayOutEntityHeadRotation packetPlayOutEntityHeadRotation = new PacketPlayOutEntityHeadRotation();
         CompabilityHandler.setValue((Object)packetPlayOutEntityHeadRotation, "a", ep.getId());
         CompabilityHandler.setValue((Object)packetPlayOutEntityHeadRotation, "b", this.getFixRotation(yaw));
