@@ -21,7 +21,7 @@ public class PluginLib extends JavaPlugin {
      * higher plugin version = higher number
      * @since 1.0-b2
      */
-    public static final int API_VERSION = 2;
+    public static final int API_VERSION = 3;
 
     @Override
     public void onEnable() {

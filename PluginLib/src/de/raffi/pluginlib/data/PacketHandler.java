@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import de.raffi.pluginlib.event.ChannelReadEvent;
 import de.raffi.pluginlib.event.PacketSendEvent;
+import de.raffi.pluginlib.main.PluginLib;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
@@ -19,7 +20,7 @@ public class PacketHandler extends ChannelDuplexHandler {
 	@Override
 	public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
 		PacketSendEvent e = new PacketSendEvent(p, ctx, msg, promise);
-		Bukkit.getPluginManager().callEvent(e);
+		Bukkit.getScheduler().runTask(PluginLib.getInstance(), ()->Bukkit.getPluginManager().callEvent(e));
 		if(!e.isCancelled())
 			super.write(ctx, msg, promise);
 	}
@@ -27,7 +28,7 @@ public class PacketHandler extends ChannelDuplexHandler {
 	@Override
 	  public void channelRead(ChannelHandlerContext c, Object m) throws Exception {
 		ChannelReadEvent e = new ChannelReadEvent(getPlayer(), c, m);
-		Bukkit.getPluginManager().callEvent(e);
+		Bukkit.getScheduler().runTask(PluginLib.getInstance(), ()->Bukkit.getPluginManager().callEvent(e));
 		if(!e.isCancelled())
 			super.channelRead(c, m);
 	  
