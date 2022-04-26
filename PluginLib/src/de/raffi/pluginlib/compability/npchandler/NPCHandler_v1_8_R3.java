@@ -43,7 +43,7 @@ public class NPCHandler_v1_8_R3 implements NPCHandler{
 		MinecraftServer nmsServer = ((CraftServer) Bukkit.getServer()).getServer();
 		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
 
-		EntityPlayer entity = new EntityPlayer(nmsServer, nmsWorld, profile,	new PlayerInteractManager(nmsWorld));
+		EntityPlayer entity = new EntityPlayer(nmsServer, nmsWorld, profile, new PlayerInteractManager(nmsWorld));
 		entity.setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
 		return entity;
 	}

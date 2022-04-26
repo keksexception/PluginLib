@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.json.simple.JSONObject;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -20,6 +21,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
 import de.raffi.pluginlib.compability.npchandler.NPCHandlerManager;
+import de.raffi.pluginlib.converter.ConverterLocation;
 import de.raffi.pluginlib.main.PluginLib;
 import de.raffi.pluginlib.utils.Logger;
 import de.raffi.pluginlib.utils.UUIDFetcher;
@@ -80,6 +82,32 @@ public class NPC {
 		return this;
 	}
 	/**
+	 * converts object to Json
+	 * @since 1.1-b5
+	 */
+	@SuppressWarnings("unchecked")
+	public JSONObject toJson() {
+		JSONObject npc = new JSONObject();
+		npc.put("location", new ConverterLocation().stringify(loc));
+		npc.put("uuid", profile.getId().toString());
+		npc.put("displayname", profile.getName());
+		npc.put("skinname", skinName);
+		return npc;
+	}
+	/**
+	 * creates npc from json object
+	 * @since 1.1-b5
+	 */
+	public static NPC fromJson(JsonObject obj, boolean register) {
+		Location loc = new ConverterLocation().create(obj.get("location").getAsString());
+		UUID uuid = UUID.fromString(obj.get("uuid").getAsString());
+		String displayName = obj.get("displayname").getAsString();
+		String skinName = obj.get("skinname").getAsString();
+		NPC npc = new NPC(loc, uuid, displayName, skinName);
+		if(register) npc.register();
+		return npc;
+	}
+	/**
 	 * that happens automaticly if {@link NPC#isRemovedFromTablist()} is true
 	 * @param p the player that should see the change
 	 */
@@ -120,7 +148,7 @@ public class NPC {
 	}
 	public void setNameAboveHead(String name) {
 		try {
-			Field ff = profile.getClass().getDeclaredField("name");//don't change here
+			Field ff = profile.getClass().getDeclaredField("name");
 			ff.setAccessible(true);
 			ff.set(profile, name);
 		} catch (Exception e) {
@@ -247,10 +275,6 @@ public class NPC {
     	this.loc.setPitch(loc.getPitch());
     }
     public void setRotation(Player p, float yaw, float pitch) {
-    	/*Location clone = getLocation().clone();
-    	clone.setYaw(yaw);
-    	clone.setPitch(pitch);
-    	setLocation(p,clone);*/
     	NPCHandlerManager.npcHandler.setRotation(entity, yaw, pitch,p);
     }
     /**

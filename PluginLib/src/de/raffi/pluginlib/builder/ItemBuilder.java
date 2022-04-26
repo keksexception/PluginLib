@@ -24,12 +24,28 @@ public class ItemBuilder implements Cloneable{
 	public ItemBuilder(Material material) {
 		this(material, (short)0);
 	}
+	public ItemBuilder(ItemStack stack) {
+		this.item = stack;
+		this.itemMeta = stack.getItemMeta();
+	}
 	public ItemBuilder setName(String name) {
 		itemMeta.setDisplayName(name);
 		return this;
 	}
 	public String getName() {
 		return itemMeta.getDisplayName();
+	}
+	public ItemBuilder glow() {
+		addEnchantment(Enchantment.DURABILITY, 1);
+		addFlags(ItemFlag.HIDE_ENCHANTS);
+		return this;
+	}
+	public ItemBuilder glow(boolean glow) {
+		if(glow) {
+			addEnchantment(Enchantment.DURABILITY, 1);
+			addFlags(ItemFlag.HIDE_ENCHANTS);
+		}		
+		return this;
 	}
 	public ItemBuilder setAmount(int amount) {
 		item.setAmount(amount);

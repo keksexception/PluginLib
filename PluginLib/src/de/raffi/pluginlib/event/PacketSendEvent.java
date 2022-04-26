@@ -45,6 +45,9 @@ public class PacketSendEvent extends Event implements Cancellable{
 	public Object getPacket() {
 		return message;
 	}
+	public void setPacket(Object packet) {
+		this.message = packet;
+	}
 	public ChannelPromise getChannelPromise() {
 		return channelPromise;
 	}

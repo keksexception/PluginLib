@@ -20,7 +20,7 @@ public class NPCHandlerManager {
 			Logger.debug("Found NPCHandler: " + npcHandler.getClass().getName());
 			return true;
 		} catch (Exception e) {
-			Logger.debug("Error: Could not found any working NPCHandler! [NO_HANDLER_FOUND]");
+			Logger.debug("Error: Could not find any working NPCHandler! [NO_HANDLER_FOUND]");
 			return false;
 		}
 	}

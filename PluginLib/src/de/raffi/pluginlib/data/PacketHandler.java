@@ -20,18 +20,21 @@ public class PacketHandler extends ChannelDuplexHandler {
 	@Override
 	public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
 		PacketSendEvent e = new PacketSendEvent(p, ctx, msg, promise);
-		Bukkit.getScheduler().runTask(PluginLib.getInstance(), ()->Bukkit.getPluginManager().callEvent(e));
-		if(!e.isCancelled())
-			super.write(ctx, msg, promise);
+		if(PluginLib.getInstance().isEnabled()) {
+			Bukkit.getScheduler().runTask(PluginLib.getInstance(), ()->Bukkit.getPluginManager().callEvent(e));
+			if(!e.isCancelled())
+				super.write(ctx, e.getPacket(), promise);
+		}
+	
 	}
 
 	@Override
 	  public void channelRead(ChannelHandlerContext c, Object m) throws Exception {
 		ChannelReadEvent e = new ChannelReadEvent(getPlayer(), c, m);
-		Bukkit.getScheduler().runTask(PluginLib.getInstance(), ()->Bukkit.getPluginManager().callEvent(e));
+		if(PluginLib.getInstance().isEnabled())
+			Bukkit.getScheduler().runTask(PluginLib.getInstance(), ()->Bukkit.getPluginManager().callEvent(e));
 		if(!e.isCancelled())
 			super.channelRead(c, m);
-	  
 	  }
 	
 	public Player getPlayer() {
